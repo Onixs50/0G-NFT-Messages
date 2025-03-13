@@ -1,0 +1,69 @@
+<script>
+// Debug script to check if all required objects are defined
+window.addEventListener('load', function() {
+    console.log('Page fully loaded, checking dependencies:');
+    console.log('window.web3Utils:', window.web3Utils);
+    console.log('window.uiUtils:', window.uiUtils);
+    console.log('window.nftUtils:', window.nftUtils);
+    
+    if (!window.web3Utils) {
+        console.error('web3Utils is not defined after page load!');
+        
+        // Try to manually define it
+        window.web3Utils = {
+            burnNFT: async function(tokenId) {
+                console.log('Manual burnNFT called with tokenId:', tokenId);
+                alert('Manual burnNFT called with tokenId: ' + tokenId);
+                return { success: true, manual: true };
+            },
+            isConnected: function() {
+                return true;
+            },
+            getCurrentAccount: function() {
+                return '0x0000000000000000000000000000000000000000';
+            }
+        };
+        
+        console.log('Manually created web3Utils:', window.web3Utils);
+    }
+    
+    // Add debug button
+    const debugButton = document.createElement('button');
+    debugButton.textContent = 'Debug Burn NFT';
+    debugButton.style.position = 'fixed';
+    debugButton.style.bottom = '10px';
+    debugButton.style.right = '10px';
+    debugButton.style.zIndex = '9999';
+    debugButton.style.backgroundColor = 'red';
+    debugButton.style.color = 'white';
+    debugButton.style.padding = '10px';
+    debugButton.style.border = 'none';
+    debugButton.style.borderRadius = '5px';
+    debugButton.style.cursor = 'pointer';
+    
+    debugButton.addEventListener('click', async function() {
+        const tokenId = prompt('Enter token ID to burn:');
+        if (tokenId) {
+            try {
+                console.log('Debug button clicked, calling burnNFT with tokenId:', tokenId);
+                
+                if (window.web3Utils && window.web3Utils.burnNFT) {
+                    console.log('Calling window.web3Utils.burnNFT directly...');
+                    await window.web3Utils.burnNFT(tokenId);
+                } else if (window.app && window.app.burnNFT) {
+                    console.log('Calling window.app.burnNFT directly...');
+                    await window.app.burnNFT(tokenId);
+                } else {
+                    console.error('Neither web3Utils.burnNFT nor app.burnNFT is available!');
+                    alert('Error: burnNFT function not found!');
+                }
+            } catch (error) {
+                console.error('Debug burn failed:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+    });
+    
+    document.body.appendChild(debugButton);
+});
+</script>

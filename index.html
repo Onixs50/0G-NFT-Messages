@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI NFT Messenger</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="https://storagescan-newton.0g.ai/_next/static/media/0g-logo.1ac5595d.svg">
+    <!-- Include Web3.js -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.9.0/dist/web3.min.js"></script>
+    <!-- Include GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        // Register ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger);
+    </script>
+    <!-- Include Sweet Alert for beautiful notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <!-- Entry Animation -->
+    <div id="entry-animation" class="entry-animation">
+        <div class="logo-container">
+            <img src="https://storagescan-newton.0g.ai/_next/static/media/0g-logo.1ac5595d.svg" alt="0G Network Logo" class="logo">
+            <h1 class="title">AI NFT Messenger</h1>
+        </div>
+        <div class="tagline">Create, Mint, and Message NFTs with AI</div>
+        <button id="enter-app" class="enter-btn">Enter App</button>
+        <div class="particles"></div>
+    </div>
+
+    <!-- Main App Container (hidden initially) -->
+    <div id="app" class="app hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <img src="https://storagescan-newton.0g.ai/_next/static/media/0g-logo.1ac5595d.svg" alt="0G Network Logo" class="header-logo">
+                <h1 class="header-title">AI NFT Messenger</h1>
+            </div>
+            <div class="header-right">
+                <div id="wallet-disconnected">
+                    <button id="connect-wallet-btn" class="btn primary-btn">
+                        <i class="fas fa-wallet"></i> Connect Wallet
+                    </button>
+                </div>
+                <div id="wallet-connected" class="hidden">
+                    <div class="wallet-info">
+                        <span class="network-badge">
+                            <img src="https://storagescan-newton.0g.ai/_next/static/media/0g-logo.1ac5595d.svg" alt="0G Network" class="network-icon">
+                            <span class="network-name">0G</span>
+                        </span>
+                        <span id="wallet-address" class="wallet-address"></span>
+                        <button id="disconnect-wallet-btn" class="btn text-btn">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <button id="info-btn" class="btn icon-btn">
+                    <i class="fas fa-info-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <div class="nav-tab" data-tab="mint">
+                <i class="fas fa-magic"></i> Create NFT
+            </div>
+            <div class="nav-tab" data-tab="gallery">
+                <i class="fas fa-images"></i> Gallery
+            </div>
+            <div class="nav-tab" data-tab="messages">
+                <i class="fas fa-comments"></i> Messages
+            </div>
+            <div class="nav-tab" data-tab="leaderboard">
+                <i class="fas fa-trophy"></i> Leaderboard
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="app-content">
+            <!-- Create NFT Tab -->
+            <section id="mint-tab" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-magic"></i> Create NFT</h2>
+                    <p>Generate an AI image and mint it as an NFT</p>
+                </div>
+
+                <div class="mint-container">
+                    <div class="mint-form">
+                        <div class="form-group">
+                            <label for="nft-name">NFT Name</label>
+                            <input type="text" id="nft-name" placeholder="Enter a name for your NFT">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nft-description">Description</label>
+                            <textarea id="nft-description" placeholder="Describe your NFT"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Image Generation</label>
+                            <div class="toggle-container">
+                                <button class="toggle-btn active" data-method="ai">AI Generated</button>
+                                <button class="toggle-btn" data-method="upload">Upload Image</button>
+                            </div>
+
+                            <div id="ai-generation" class="generation-method">
+                                <div class="form-group">
+                                    <label for="ai-prompt">AI Prompt</label>
+                                    <textarea id="ai-prompt" placeholder="Describe the image you want to generate"></textarea>
+                                    <button id="generate-prompt-btn" class="btn secondary-btn">
+                                        <i class="fas fa-lightbulb"></i> Generate Prompt
+                                    </button>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>AI Model</label>
+                                    <div class="radio-group">
+                                        <label class="radio-label">
+                                            <input type="radio" name="ai-model" value="huggingface" checked> 
+                                            <span>Stable Diffusion XL</span>
+                                        </label>
+                                        <label class="radio-label">
+                                            <input type="radio" name="ai-model" value="avalai"> 
+                                            <span>DALL-E 3</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <button id="generate-image-btn" class="btn primary-btn">
+                                    <i class="fas fa-wand-magic-sparkles"></i> Generate Image
+                                </button>
+
+                                <div class="generation-status hidden">
+                                    <div class="status-spinner"></div>
+                                    <div class="status-text">Generating your image...</div>
+                                </div>
+                            </div>
+
+<div id="upload-image-section" class="generation-method hidden">
+    <div class="upload-area">
+        <div class="upload-icon">
+            <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #6c5ce7;"></i>
+        </div>
+        <div class="upload-message">Drag and drop an image here or click to browse</div>
+        <button class="btn secondary-btn upload-image-btn">
+            <i class="fas fa-upload"></i> Browse Files
+        </button>
+    </div>
+    <input type="file" id="upload-image" accept="image/*" style="display: none;">
+    <small class="form-text text-muted">Supported formats: JPG, PNG, GIF, SVG. Max size: 10MB</small>
+</div>
+
+                            <button id="add-property-btn" class="btn text-btn">
+                                <i class="fas fa-plus"></i> Add Property
+                            </button>
+                        </div>
+
+                        <button id="mint-nft-btn" class="btn primary-btn" disabled>
+                            <i class="fas fa-fire"></i> Mint NFT
+                        </button>
+                    </div>
+
+                    <div class="mint-preview">
+                        <div class="preview-header">
+                            <h3>Preview</h3>
+                        </div>
+                        <div class="preview-card">
+                            <div id="image-preview" class="preview-image">
+                                <i class="fas fa-image"></i>
+                                <p>Image preview will appear here</p>
+                            </div>
+                            <div class="preview-content">
+                                <h4 id="preview-name">NFT Name</h4>
+                                <p id="preview-description">NFT description will appear here</p>
+                                <div class="preview-divider"></div>
+                                <div class="preview-properties">
+                                    <h5>Properties</h5>
+                                    <div id="preview-properties-list">
+                                        <p class="no-properties">No properties added</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gallery Tab -->
+            <section id="gallery-tab" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-images"></i> NFT Gallery</h2>
+                    <p>View and interact with your NFTs</p>
+                </div>
+
+                <div class="gallery-container">
+                    <div class="gallery-actions">
+                        <div class="gallery-search">
+                            <input type="text" id="search-nfts" placeholder="Search NFTs...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="gallery-filters">
+                            <div class="filter-group">
+                                <label>Sort by:</label>
+                                <select id="sort-nfts">
+                                    <option value="newest">Newest First</option>
+                                    <option value="oldest">Oldest First</option>
+                                    <option value="name-asc">Name (A-Z)</option>
+                                    <option value="name-desc">Name (Z-A)</option>
+                                    <option value="messages">Most Messages</option>
+                                </select>
+                            </div>
+                            <div class="view-toggle">
+                                <button class="view-btn active" data-view="grid">
+                                    <i class="fas fa-th"></i>
+                                </button>
+                                <button class="view-btn" data-view="list">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="gallery-loading" class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Loading your NFTs...</p>
+                    </div>
+
+                    <div id="gallery-empty" class="empty-state hidden">
+                        <i class="fas fa-image"></i>
+                        <h3>No NFTs Found</h3>
+                        <p>You haven't minted any NFTs yet. Create your first NFT now!</p>
+                        <button class="btn primary-btn nav-to-mint">
+                            <i class="fas fa-magic"></i> Create NFT
+                        </button>
+                    </div>
+
+                    <div id="nft-grid" class="nft-grid"></div>
+                    <div id="nft-list" class="nft-list hidden"></div>
+
+                    <div class="pagination">
+                        <button id="prev-page" class="btn text-btn" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <span id="page-info">Page 1 of 1</span>
+                        <button id="next-page" class="btn text-btn" disabled>
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Messages Tab -->
+            <section id="messages-tab" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-comments"></i> Messages</h2>
+                    <p>View and send messages to your NFTs</p>
+                </div>
+
+                <div class="messages-container">
+                    <div class="message-sidebar">
+                        <div class="sidebar-header">
+                            <h3>My NFTs</h3>
+                            <button id="refresh-nfts" class="btn icon-btn">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="message-sidebar-loading" class="loading-container">
+                            <div class="loading-spinner"></div>
+                            <p>Loading NFTs...</p>
+                        </div>
+                        
+                        <div id="message-sidebar-empty" class="empty-state hidden">
+                            <i class="fas fa-image"></i>
+                            <p>No NFTs Found</p>
+                            <button class="btn secondary-btn nav-to-mint">
+                                Create NFT
+                            </button>
+                        </div>
+                        
+                        <div id="message-nft-list" class="message-nft-list"></div>
+                    </div>
+                    
+                    <div class="message-content">
+                        <div id="select-nft-prompt" class="select-nft-prompt">
+                            <i class="fas fa-hand-point-left"></i>
+                            <h3>Select an NFT</h3>
+                            <p>Choose an NFT from the sidebar to view messages</p>
+                        </div>
+                        
+                        <div id="message-nft-details" class="message-nft-details hidden">
+                            <div class="message-nft-header">
+                                <img id="message-nft-img" src="" alt="NFT Image" class="message-nft-img">
+                                <div class="message-nft-info">
+                                    <h3 id="message-nft-name">NFT Name</h3>
+                                    <p id="message-nft-id">Token ID: 0</p>
+                                </div>
+                                <div class="message-nft-actions">
+                                    <button id="refresh-messages" class="btn icon-btn">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                    <button id="view-on-explorer" class="btn secondary-btn">
+                                        <i class="fas fa-external-link-alt"></i> Explorer
+                                    </button>
+                                    <button id="burn-nft" class="btn danger-btn hidden">
+                                        <i class="fas fa-fire"></i> Burn NFT
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="messages-list-container">
+                                <div id="messages-loading" class="loading-container">
+                                    <div class="loading-spinner"></div>
+                                    <p>Loading messages...</p>
+                                </div>
+                                
+                                <div id="no-messages" class="empty-state hidden">
+                                    <i class="fas fa-comments"></i>
+                                    <h3>No Messages Yet</h3>
+                                    <p>Be the first to send a message to this NFT!</p>
+                                </div>
+                                
+                                <div id="messages-list" class="messages-list"></div>
+                            </div>
+                            
+                            <div class="message-input-container">
+                                <textarea id="message-input" placeholder="Type your message..."></textarea>
+                                <button id="send-message" class="btn primary-btn">
+                                    <i class="fas fa-paper-plane"></i> Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Leaderboard Tab -->
+            <section id="leaderboard-tab" class="tab-content">
+                <div class="section-header">
+                    <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
+                    <p>See the most active users in the community</p>
+                </div>
+
+                <div class="leaderboard-container">
+                    <div class="leaderboard-toggle">
+                        <button class="toggle-btn active" data-board="sent">
+                            <i class="fas fa-paper-plane"></i> Top Senders
+                        </button>
+                        <button class="toggle-btn" data-board="received">
+                            <i class="fas fa-inbox"></i> Top Receivers
+                        </button>
+                    </div>
+                    
+                    <div id="leaderboard-loading" class="loading-container">
+                        <div class="loading-spinner"></div>
+                        <p>Loading leaderboard data...</p>
+                    </div>
+                    
+                    <div id="leaderboard-empty" class="empty-state hidden">
+                        <i class="fas fa-trophy"></i>
+                        <h3>No Data Yet</h3>
+                        <p>Be the first to interact with NFTs and appear on the leaderboard!</p>
+                    </div>
+                    
+                    <div class="leaderboard-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="rank-column">Rank</th>
+                                    <th>Address</th>
+                                    <th class="count-column">Messages</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-left">
+                <p>© 2025 AI NFT Messenger on <a href="https://explorer.0g.ai" target="_blank">0G Network</a></p>
+            </div>
+            <div class="footer-right">
+                <a href="https://twitter.com/sadeghss50" target="_blank" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://github.com/onixs50" target="_blank" class="social-link">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <!-- Wallet Connection Modal -->
+    <div id="wallet-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Connect Wallet</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="wallet-options">
+                    <div class="wallet-option" data-wallet="metamask">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/512px-MetaMask_Fox.svg.png?20220831120339" alt="MetaMask">
+                        <span>MetaMask</span>
+                    </div>
+                    <div class="wallet-option" data-wallet="okx">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/OKX_logo.svg/558px-OKX_logo.svg.png" alt="OKX Wallet">
+                        <span>OKX Wallet</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NFT Detail Modal -->
+    <div id="nft-detail-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="detail-nft-name">NFT Name</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-container">
+                    <div class="detail-image">
+                        <img id="detail-nft-img" src="" alt="NFT Image">
+                    </div>
+                    <div class="detail-info">
+                        <div class="detail-row">
+                            <span class="detail-label">Owner</span>
+                            <span id="detail-nft-owner" class="detail-value">0x0000...0000</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Token ID</span>
+                            <span id="detail-nft-id" class="detail-value">0</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Description</span>
+                            <p id="detail-nft-description" class="detail-value">Description</p>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <h4>Properties</h4>
+                            <div id="detail-nft-properties" class="detail-properties"></div>
+                        </div>
+                        
+                        <div class="detail-actions">
+                            <button id="detail-send-message" class="btn primary-btn">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                            <button id="detail-view-explorer" class="btn secondary-btn">
+                                <i class="fas fa-external-link-alt"></i> View on Explorer
+                            </button>
+                            <button id="detail-burn-nft" class="btn danger-btn hidden">
+                                <i class="fas fa-fire"></i> Burn NFT
+                            </button>
+                        </div>
+                        
+                        <div id="detail-message-form" class="detail-message-form hidden">
+                            <textarea id="detail-message-input" placeholder="Type your message..."></textarea>
+                            <button id="detail-send-message-btn" class="btn primary-btn">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mint Success Modal -->
+    <div id="mint-success-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>NFT Minted Successfully!</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="success-container">
+                    <div class="success-image">
+                        <img id="success-nft-img" src="" alt="NFT Image">
+                        <div class="success-badge">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="success-details">
+                        <h4 id="success-nft-name">NFT Name</h4>
+                        <div class="success-detail">
+                            <span class="detail-label">Token ID</span>
+                            <span id="success-nft-id" class="detail-value">0</span>
+                        </div>
+                        <div class="success-detail">
+                            <span class="detail-label">Transaction</span>
+                            <a id="success-nft-tx" href="#" target="_blank" class="detail-value tx-hash">0x0000...0000</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="success-actions">
+                    <button id="success-view-nft" class="btn primary-btn">
+                        <i class="fas fa-eye"></i> View NFT
+                    </button>
+                    <button id="success-share-twitter" class="btn twitter-btn">
+                        <i class="fab fa-twitter"></i> Share on Twitter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>About AI NFT Messenger</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-section">
+                    <h4>What is AI NFT Messenger?</h4>
+                    <p>AI NFT Messenger is a decentralized application that allows users to create AI-generated images, mint them as NFTs on the 0G Network, and send messages to NFTs owned by other users.</p>
+                </div>
+                
+                <div class="info-section">
+                    <h4>How to use</h4>
+                    <ol>
+                        <li>Connect your MetaMask or OKX wallet to the 0G Network.</li>
+                        <li>Generate an image using AI or upload your own image.</li>
+                        <li>Fill in the details and mint your NFT.</li>
+                        <li>View your NFTs in the Gallery and Messages tabs.</li>
+                        <li>Send messages to NFTs and climb the leaderboard!</li>
+                    </ol>
+                </div>
+                
+                <div class="info-section">
+                    <h4>About the 0G Network</h4>
+                    <p>0G is a decentralized network designed for building and deploying Web3 applications. This dApp is deployed on the 0G Network testnet.</p>
+                </div>
+                
+                <div class="info-section">
+                    <h4>Credits</h4>
+                    <p>Created by <a href="https://twitter.com/sadeghss50" target="_blank">@sadeghss50</a> | <a href="https://github.com/onixs50" target="_blank">GitHub</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Processing Modal -->
+    <div id="transaction-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div id="transaction-pending" class="transaction-status">
+                    <div class="transaction-spinner"></div>
+                    <h3>Transaction Processing</h3>
+                    <p>Please confirm the transaction in your wallet and wait for it to be mined.</p>
+                </div>
+                
+                <div id="transaction-success" class="transaction-status hidden">
+                    <div class="transaction-icon success">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>Transaction Successful!</h3>
+                    <p id="transaction-success-message">Your transaction has been confirmed.</p>
+                    <a id="transaction-link" href="#" target="_blank" class="btn secondary-btn">
+                        <i class="fas fa-external-link-alt"></i> View on Explorer
+                    </a>
+                </div>
+                
+                <div id="transaction-error" class="transaction-status hidden">
+                    <div class="transaction-icon error">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h3>Transaction Failed</h3>
+                    <p id="transaction-error-message">There was an error processing your transaction.</p>
+                    <button id="transaction-dismiss" class="btn secondary-btn">Dismiss</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <div id="loading-message" class="loading-message">Processing...</div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+<!-- External Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/web3@1.7.4/dist/web3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Other external libraries -->
+
+<!-- Configuration and Basic Utilities -->
+<script src="config.js"></script>
+<script src="abi.js"></script>
+<script src="ui-utils.js"></script>
+
+<!-- Web3 Utilities -->
+<script src="web3-utils.js"></script>
+
+<!-- Additional Utilities -->
+<script src="animations.js"></script>
+<script src="image-utils.js"></script>
+<script src="nft-utils.js"></script>
+<script src="enhanced-features.js"></script>
+<script src="ui-enhancements.js"></script>
+<script src="burn-handler.js"></script>
+<!-- Main Application Logic -->
+<script src="main.js"></script>
+<script>
+// Debug script to check if all required objects are defined
+window.addEventListener('load', function() {
+    console.log('Page fully loaded, checking dependencies:');
+    console.log('window.web3Utils:', window.web3Utils);
+    console.log('window.uiUtils:', window.uiUtils);
+    console.log('window.nftUtils:', window.nftUtils);
+    
+    if (!window.web3Utils) {
+        console.error('web3Utils is not defined after page load!');
+        
+        // Try to manually define it
+        window.web3Utils = {
+            burnNFT: async function(tokenId) {
+                console.log('Manual burnNFT called with tokenId:', tokenId);
+                alert('Manual burnNFT called with tokenId: ' + tokenId);
+                return { success: true, manual: true };
+            },
+            isConnected: function() {
+                return true;
+            },
+            getCurrentAccount: function() {
+                return '0x0000000000000000000000000000000000000000';
+            }
+        };
+        
+        console.log('Manually created web3Utils:', window.web3Utils);
+    }
+    
+    // Add debug button
+    const debugButton = document.createElement('button');
+    debugButton.textContent = 'Debug Burn NFT';
+    debugButton.style.position = 'fixed';
+    debugButton.style.bottom = '10px';
+    debugButton.style.right = '10px';
+    debugButton.style.zIndex = '9999';
+    debugButton.style.backgroundColor = 'red';
+    debugButton.style.color = 'white';
+    debugButton.style.padding = '10px';
+    debugButton.style.border = 'none';
+    debugButton.style.borderRadius = '5px';
+    debugButton.style.cursor = 'pointer';
+    
+    debugButton.addEventListener('click', async function() {
+        const tokenId = prompt('Enter token ID to burn:');
+        if (tokenId) {
+            try {
+                console.log('Debug button clicked, calling burnNFT with tokenId:', tokenId);
+                
+                if (window.web3Utils && window.web3Utils.burnNFT) {
+                    console.log('Calling window.web3Utils.burnNFT directly...');
+                    await window.web3Utils.burnNFT(tokenId);
+                } else if (window.app && window.app.burnNFT) {
+                    console.log('Calling window.app.burnNFT directly...');
+                    await window.app.burnNFT(tokenId);
+                } else {
+                    console.error('Neither web3Utils.burnNFT nor app.burnNFT is available!');
+                    alert('Error: burnNFT function not found!');
+                }
+            } catch (error) {
+                console.error('Debug burn failed:', error);
+                alert('Error: ' + error.message);
+            }
+        }
+    });
+    
+    document.body.appendChild(debugButton);
+});
+</script>
+</body>
+</html>

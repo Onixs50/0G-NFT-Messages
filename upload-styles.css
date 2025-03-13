@@ -1,0 +1,80 @@
+/* Upload Area Styles */
+.upload-area {
+    border: 2px dashed #6c5ce7;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: rgba(108, 92, 231, 0.05);
+    position: relative;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.upload-area.highlight {
+    border-color: #00cec9;
+    background-color: rgba(0, 206, 201, 0.1);
+}
+
+.upload-area.error {
+    border-color: #e74c3c;
+    background-color: rgba(231, 76, 60, 0.05);
+}
+
+.upload-area.success {
+    border-color: #2ecc71;
+    background-color: rgba(46, 204, 113, 0.05);
+}
+
+.upload-area input[type="file"] {
+    display: none;
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: #6c5ce7;
+    margin-bottom: 15px;
+}
+
+.upload-area.error .upload-icon {
+    color: #e74c3c;
+}
+
+.upload-area.success .upload-icon {
+    color: #2ecc71;
+}
+
+.upload-message {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.upload-area.error .upload-message {
+    color: #e74c3c;
+}
+
+.upload-area.success .upload-message {
+    color: #2ecc71;
+}
+
+.upload-preview {
+    width: 100%;
+    max-height: 200px;
+    overflow: hidden;
+    margin-top: 10px;
+    border-radius: 4px;
+    position: relative;
+}
+
+.upload-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    border-radius: 4px;
+}
