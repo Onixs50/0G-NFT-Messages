@@ -15,7 +15,7 @@ const NETWORK = {
         'https://0g-json-rpc-public.originstake.com'
     ],
     blockExplorer: 'https://chainscan-galileo.0g.ai',
-    contractAddress: '0x3ad6ca089c783c637b7049c82aaf317a055fd850',
+    contractAddress: '0x12B3d5CA69905ce6EE1F3df4817E7c16d67727a0',
     icon: 'https://chainscan-galileo.0g.ai/favicon.ico',
     nativeCurrency: {
         name: '0G',
@@ -71,3 +71,4 @@ const ANIMATION_SETTINGS = {
 
 
 // IMPORTANT: Remove NFT_ABI from here since it's in abi.js
+
