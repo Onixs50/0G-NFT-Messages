@@ -27,7 +27,7 @@ const NETWORK = {
 // API configuration for image generation
 const API_CONFIG = {
     huggingface: {
-        apiKey: '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',
+        apiKey: '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',
         modelId: 'stabilityai/stable-diffusion-xl-base-1.0',
         endpoint: 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0'
     },
@@ -71,5 +71,6 @@ const ANIMATION_SETTINGS = {
 
 
 // IMPORTANT: Remove NFT_ABI from here since it's in abi.js
+
 
 
