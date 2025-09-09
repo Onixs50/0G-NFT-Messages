@@ -18,7 +18,7 @@ const NETWORK = {
     contractAddress: '0x12B3d5CA69905ce6EE1F3df4817E7c16d67727a0',
     icon: 'https://chainscan-galileo.0g.ai/favicon.ico',
     nativeCurrency: {
-        name: '0G',
+        name: 't0G',
         symbol: '0G',
         decimals: 18
     }
@@ -27,7 +27,7 @@ const NETWORK = {
 // API configuration for image generation
 const API_CONFIG = {
     huggingface: {
-        apiKey: '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',
+        apiKey: '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',
         modelId: 'stabilityai/stable-diffusion-xl-base-1.0',
         endpoint: 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0'
     },
@@ -71,6 +71,7 @@ const ANIMATION_SETTINGS = {
 
 
 // IMPORTANT: Remove NFT_ABI from here since it's in abi.js
+
 
 
 
