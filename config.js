@@ -6,20 +6,20 @@
 const NETWORK = {
     id: '0g',
     name: '0G Network',
-    chainId: '0x40d8',  // 16600
-    rpcUrl: 'https://og-testnet-evm.itrocket.net',
+    chainId: '0x40d9',  // 16601
+    rpcUrl: 'https://evmrpc-testnet.0g.ai',
     rpcUrls: [
         'https://og-testnet-evm.itrocket.net',
         'https://evmrpc-testnet.0g.ai',
         'https://lightnode-json-rpc-0g.grandvalleys.com',
         'https://0g-json-rpc-public.originstake.com'
     ],
-    blockExplorer: 'https://explorer.0g.ai',
+    blockExplorer: 'https://chainscan-galileo.0g.ai',
     contractAddress: '0x3ad6ca089c783c637b7049c82aaf317a055fd850',
-    icon: 'https://storagescan-newton.0g.ai/_next/static/media/0g-logo.1ac5595d.svg',
+    icon: 'https://chainscan-galileo.0g.ai/favicon.ico',
     nativeCurrency: {
-        name: 'A0GI',
-        symbol: 'A0GI',
+        name: '0G',
+        symbol: '0G',
         decimals: 18
     }
 };
@@ -68,5 +68,6 @@ const ANIMATION_SETTINGS = {
     cardStagger: 0.1,
     particleCount: 50
 };
+
 
 // IMPORTANT: Remove NFT_ABI from here since it's in abi.js
